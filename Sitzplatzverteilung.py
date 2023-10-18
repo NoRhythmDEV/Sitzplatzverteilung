@@ -28,7 +28,7 @@ def save_as_pdf():
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
     
     # Get the current timestamp in the format HHMMSS
-    timestr = time.strftime("%H-%M-%S")
+    timestr = time.strftime("%Hh-%Mm-%Ss")
 
     # Original filename
     original_filename = "Sitzordnung.pdf"
@@ -128,26 +128,26 @@ text_output = tk.Text(root, font=("Arial", 12), width=120, height=40)
 text_output.grid(row=1, column=1, padx=(15, 10), pady=(0, 10), sticky="nsew")
 
 # Eingabefeld für Personen pro Tisch
-label_personen_pro_tisch = tk.Label(root, font=("Arial", 16), text="Personen pro Tisch:")
+label_personen_pro_tisch = tk.Label(root, font=("Arial", 16), text="Personen pro Tisch (Ganzzahl):")
 label_personen_pro_tisch.grid(row=2, column=0, padx=(15, 10), pady=(15, 10), sticky="w")
 
 entry_personen_pro_tisch = tk.Entry(root, font=("Arial", 12), width=25, justify="center")
 entry_personen_pro_tisch.grid(row=3, column=0, padx=(15, 10), pady=(0, 10), sticky="nswe")
 
 # Import Excel-Sheet
-importexcel_button = tk.Button(root, font=("Arial", 16), width=50, text="Infos aus Excel-Datei importieren", command=import_from_excel)
+importexcel_button = tk.Button(root, font=("Arial", 16), width=50, text="1. Infos aus Excel-Datei importieren", command=import_from_excel)
 importexcel_button.grid(row=4, column=0, padx=(15, 10), pady=(10, 15))
 
 # Button zum Generieren der Sitzordnungen
-generate_button = tk.Button(root, font=("Arial", 16), text="Sitzordnungen generieren", command=generate_sitzordnungen, width=50)
+generate_button = tk.Button(root, font=("Arial", 16), text="2. Sitzordnungen generieren", command=generate_sitzordnungen, width=50)
 generate_button.grid(row=5, column=0, padx=(15, 10), pady=(10, 15))
 
 # Als PDF Speichern Button
-saveaspdf_button = tk.Button(root, font=("Arial", 16), width=50, text="Als PDF Speichern", command=save_as_pdf)
+saveaspdf_button = tk.Button(root, font=("Arial", 16), width=50, text="3. Als PDF Speichern", command=save_as_pdf)
 saveaspdf_button.grid(row=4, column=1, padx=(15, 10), pady=(10, 15))
 
 # Exit-Button
-exit_button = tk.Button(root, font=("Arial", 16), width=50, text="Exit", command=close_window)
+exit_button = tk.Button(root, font=("Arial", 16), width=50, text="4. Exit", command=close_window)
 exit_button.grid(row=5, column=1, padx=(15, 10), pady=(10, 15))
 
 # GUI starten
