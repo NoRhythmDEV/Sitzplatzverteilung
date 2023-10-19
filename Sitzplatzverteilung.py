@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import WORD, filedialog, messagebox
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import openpyxl
 import os
 import random
 import time
+
 
 # Funktion zum Importieren von Daten aus einer Excel-Datei
 def import_from_excel():
@@ -23,10 +25,10 @@ def import_from_excel():
             messagebox.showerror("Fehler", f"Fehler beim Importieren der Daten aus der Excel-Datei:\n{str(e)}")
 
 
-# Funktion zum Speichern als PDF
+#Export als PDF
 def save_as_pdf():
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
-    
+
     # Get the current timestamp in the format HHMMSS
     timestr = time.strftime("%Hh-%Mm-%Ss")
 
@@ -42,18 +44,31 @@ def save_as_pdf():
     file_path = os.path.join(desktop_path, new_filename)
     text_content = text_output.get("1.0", tk.END).strip()
 
-    pdf = canvas.Canvas(file_path)
+    pdf = canvas.Canvas(file_path, pagesize=letter)
     pdf.setFont("Helvetica", 10)
-    pdf.drawString(50, 750, "Sitzordnungen:")
+    
+    # Split the text into lines
+    lines = text_content.split('\n')
 
-    y_position = 730
-    for line in text_content.split('\n'):
+    # Define page parameters
+    max_lines = 45  # Maximum lines per page
+    current_line = 0
+    page_number = 1
+
+    # Loop through the lines and add them to the PDF
+    for line in lines:
+        if current_line >= max_lines:
+            pdf.showPage()
+            pdf.setFont("Helvetica", 10)
+            current_line = 0
+            page_number += 1
+        y_position = 730 - (current_line * 15)
         pdf.drawString(50, y_position, line)
-        y_position -= 15
+        current_line += 1
 
     pdf.save()
 
-    messagebox.showinfo("PDF gespeichert", f"Die Datei wurde als '{new_filename}' auf dem Desktop gespeichert:\n{file_path}")
+    messagebox.showinfo("PDF gespeichert", f"Die Datei wurde als '{new_filename}' auf dem Desktop gespeichert (Seite {page_number}).")
 
 # Funktion zum Generieren der Sitzordnungen
 def generate_sitzordnungen():
@@ -74,7 +89,7 @@ def generate_sitzordnungen():
     sitzordnungen_text = ""
 
     for ordnung_nummer in range(2):
-        sitzordnungen_text += f"Sitzordnung {ordnung_nummer + 1}:\n"
+        sitzordnungen_text += f"Sitzordnung {ordnung_nummer + 1}:\n\n"
         tisch_counter = 1
         personen_counter = 0
 
@@ -84,9 +99,9 @@ def generate_sitzordnungen():
                 tisch_personen.append(namen[personen_counter])
                 personen_counter += 1
 
-            sitzordnungen_text += f"[Tisch {tisch_counter}] → [{', '.join(tisch_personen)}]\n"
+            sitzordnungen_text += f"[Tisch {tisch_counter}]\n\n [{' | '.join(tisch_personen)}]\n\n"
             tisch_counter += 1
-
+#→
         # Restliche Personen hinzufügen
         if restliche_personen > 0:
             tisch_personen = []
@@ -94,7 +109,7 @@ def generate_sitzordnungen():
                 tisch_personen.append(namen[personen_counter])
                 personen_counter += 1
 
-            sitzordnungen_text += f"[Tisch {tisch_counter}] → [{', '.join(tisch_personen)}]\n\n"
+            sitzordnungen_text += f"[Tisch {tisch_counter}]\n\n [{' | '.join(tisch_personen)}]\n\n"
 
     # Output im Textfeld anzeigen
     text_output.delete("1.0", tk.END)
